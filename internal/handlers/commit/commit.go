@@ -1,22 +1,24 @@
-package add
+package commit
 
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"sync"
 )
 
-func GitAdd(wg *sync.WaitGroup) error {
+func GitCommitWithMessage(wg *sync.WaitGroup) error {
 	defer wg.Done()
 	fmt.Printf("Enter a commit name:\n")
 	reader := bufio.NewReader(os.Stdin)
 	text, err := reader.ReadString('\n')
 	if err != nil {
-		return err
+		log.Fatal("Ошибка при чтении данных:", err)
 	}
-	cmd := exec.Command("git", "add", text)
+	fullCmd := fmt.Sprintf(`git commit -m "%s"`, text)
+	cmd := exec.Command(fullCmd)
 	err = cmd.Run()
 	if err != nil {
 		return err
